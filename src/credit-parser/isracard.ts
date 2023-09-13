@@ -6,6 +6,20 @@ import { TransactionData } from "../types";
 import { file } from "bun";
 // Load the XLSX file
 
+export const isracardKeywords = {
+  purchaseDate: "תאריך רכישה",
+  totalIlsCharge: `סך חיוב בש"ח:`,
+};
+
+const columnMapping: { [k: string]: keyof TransactionData } = {
+  "תאריך רכישה": "date",
+  "שם בית עסק": "business",
+  "סכום עסקה": "dealAmount",
+  "מטבע מקור": "currency",
+  "סכום חיוב": "chargeAmount",
+  "פירוט נוסף": "misc",
+};
+
 const removeIdPrefix = (id: string) => id.substring(4);
 
 const cleanData = (mappedData: TransactionData[][]) => {
@@ -30,8 +44,8 @@ const getRanges = (
   const endValues: string[] = [];
   // Iterate through the <td> elements and check their text content
   tdElements.each((index, element) => {
-    const startIndicator = "תאריך רכישה";
-    const endIndicator = `סך חיוב בש"ח:`;
+    const startIndicator = isracardKeywords.purchaseDate;
+    const endIndicator = isracardKeywords.totalIlsCharge;
     const tdText = $(element).text().trim();
     const id = $(element).prop("id");
 
@@ -53,19 +67,9 @@ const getRanges = (
   });
 };
 
-const parseIsracard = async (filePath: string) => {
+export const parseIsracard = async (filePath: string) => {
   console.log(filePath);
   const workbook = XLSX.readFile(filePath);
-
-  // Specify the column mapping
-  const columnMapping: { [k: string]: keyof TransactionData } = {
-    "תאריך רכישה": "date",
-    "שם בית עסק": "business",
-    "סכום עסקה": "dealAmount",
-    "מטבע מקור": "currency",
-    "סכום חיוב": "chargeAmount",
-    "פירוט נוסף": "misc",
-  };
 
   // Get the first sheet from the workbook
   const sheetName = workbook.SheetNames[0];
@@ -96,5 +100,3 @@ const parseIsracard = async (filePath: string) => {
 
   return cleanData(mappedData);
 };
-
-export default parseIsracard;

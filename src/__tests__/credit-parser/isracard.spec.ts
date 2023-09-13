@@ -1,5 +1,5 @@
 import { expect, test } from "bun:test";
-import parseIsracard from "../../credit-parser/isracard";
+import { parseIsracard, isracardKeywords } from "../../credit-parser/isracard";
 
 const expectedCharges = [
   {
@@ -47,7 +47,9 @@ test("should not include total amount row", async () => {
     `${import.meta.dir}/__fixtures__/isra-fixture.xlsx`
   );
   console.log(res);
-  expect(res.find((row) => row.business === `סך חיוב בש"ח:`)).toBeNil();
+  expect(
+    res.find((row) => row.business === isracardKeywords.totalIlsCharge)
+  ).toBeNil();
 });
 
 test("should extract all charges correctly", async () => {
