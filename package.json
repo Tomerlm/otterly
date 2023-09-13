@@ -7,5 +7,11 @@
   },
   "peerDependencies": {
     "typescript": "^5.0.0"
+  },
+  "dependencies": {
+    "@types/lodash": "^4.14.198",
+    "cheerio": "^1.0.0-rc.12",
+    "lodash": "^4.17.21",
+    "xlsx": "^0.18.5"
   }
 }
